@@ -1,5 +1,7 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
+
+use Joomla\CMS\HTML\HTMLHelper;
 ?>
 <div class="col100">
 <fieldset class="adminform">
@@ -25,12 +27,21 @@ defined('_JEXEC') or die('Restricted access');
 
    <tr>
    <td style="width:250px;" class="key">
+     Description
+   </td>
+   <td>
+     <input type = "text" class = "inputbox" name = "pm_params[description]" size="45" value = "<?php echo $params['description'] ?? 'Оплата в интернет магазине'?>" />
+   </td>
+ </tr>
+
+   <tr>
+   <td style="width:250px;" class="key">
      <?php echo _JSHOP_HBEPAY_TERMINAL;?>
    </td>
    <td>
      <input type = "text" class = "inputbox" name = "pm_params[terminal]" size="45" value = "<?php echo $params['terminal']?>" />
    </td>
-  `</tr>
+  </tr>
 
  <tr>
    <td style="width:250px;" class="key">
@@ -38,7 +49,7 @@ defined('_JEXEC') or die('Restricted access');
    </td>
    <td>
      <?php              
-     print JHTML::_('select.booleanlist', 'pm_params[testmode]', 'class = "inputbox"', $params['testmode']);
+     echo HTMLHelper::_('select.booleanlist', 'pm_params[testmode]', 'class = "inputbox"', $params['testmode']);
      ?>
    </td>
  </tr>
