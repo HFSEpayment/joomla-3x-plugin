@@ -1,6 +1,9 @@
 <?php
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Uri\Uri;
+
 class pm_hbepay extends PaymentRoot{
 
     function showPaymentForm($params, $pmconfigs){
@@ -8,7 +11,7 @@ class pm_hbepay extends PaymentRoot{
     }
 
     function loadLanguageFile(){
-        $lang = JFactory::getLanguage();
+        $lang = Factory::getLanguage();
         $langtag = $lang->getTag(); 
 
         if ($langtag == 'RU') {
@@ -34,7 +37,7 @@ class pm_hbepay extends PaymentRoot{
 	}
 
 	function showEndForm($params, $order) {
-        $lang = JFactory::getLanguage();
+        $lang = Factory::getLanguage();
         $langtag = $lang->getTag();
         if ($params['testmode']){
             $mode = "test";
@@ -44,10 +47,10 @@ class pm_hbepay extends PaymentRoot{
         $pm_method = $this->getPmMethod();
         $invoice_id = $order->order_number;
 
-        $post_url       = JURI::root(). "index.php?option=com_jshopping&controller=checkout&task=step7&act=return&js_paymentclass=pm_hbepay&order_id=".$order->order_id;
-        $failure_post_url  = JURI::root(). "index.php?option=com_jshopping&controller=checkout&task=step7&act=cancel&js_paymentclass=pm_hbepay&order_id=".$order->order_id;
-        $return         = JURI::root(). "index.php?option=com_jshopping&controller=checkout&task=step7&act=return&js_paymentclass=pm_hbepay&order_id=".$order->order_id;
-        $cancel_return  = JURI::root(). "index.php?option=com_jshopping&controller=checkout&task=step7&act=cancel&js_paymentclass=pm_hbepay&order_id=".$order->order_id;
+        $post_url       = Uri::root(). "index.php?option=com_jshopping&controller=checkout&task=step7&act=return&js_paymentclass=pm_hbepay&order_id=".$order->order_id;
+        $failure_post_url  = Uri::root(). "index.php?option=com_jshopping&controller=checkout&task=step7&act=cancel&js_paymentclass=pm_hbepay&order_id=".$order->order_id;
+        $return         = Uri::root(). "index.php?option=com_jshopping&controller=checkout&task=step7&act=return&js_paymentclass=pm_hbepay&order_id=".$order->order_id;
+        $cancel_return  = Uri::root(). "index.php?option=com_jshopping&controller=checkout&task=step7&act=cancel&js_paymentclass=pm_hbepay&order_id=".$order->order_id;
 
         $inputs = [
             'hbp_client_id'             => $params['client_id'],
@@ -55,7 +58,7 @@ class pm_hbepay extends PaymentRoot{
             'hbp_currency'              => $order->currency_code_iso,
             'hbp_client_secret'         => $params['client_secret'],
             'hbp_env'                   => $mode,
-            'hbp_description'           => $params['description'],
+            'hbp_description'           => $params['description'] ?? 'Оплата в интернет магазине',
             'hbp_terminal'              => $params['terminal'],
             'hbp_back_link'             => $return,
             'hbp_failure_back_link'     => $cancel_return,
@@ -72,9 +75,9 @@ class pm_hbepay extends PaymentRoot{
     
     function paymentGateway($inputs) {
         // initiate api urls
-        $test_url = "https://testoauth.homebank.kz/epay2/oauth2/token";
+        $test_url = "https://test-epay-oauth.epayment.kz/oauth2/token";
         $prod_url = "https://epay-oauth.homebank.kz/oauth2/token";
-        $test_page = "https://test-epay.homebank.kz/payform/payment-api.js";
+        $test_page = "https://test-epay.epayment.kz/payform/payment-api.js";
         $prod_page = "https://epay.homebank.kz/payform/payment-api.js";
 
         $token_api_url = "";
@@ -188,7 +191,7 @@ class pm_hbepay extends PaymentRoot{
 
     function getUrlParams($pmconfigs){
         $params = array();
-        $params['order_id'] = JFactory::getApplication()->input->getInt("order_id");
+        $params['order_id'] = Factory::getApplication()->input->getInt("order_id");
         $params['hash'] = "";
         $params['checkHash'] = 0;
         $params['checkReturnParams'] = 1;
